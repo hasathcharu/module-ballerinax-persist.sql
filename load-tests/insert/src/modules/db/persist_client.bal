@@ -1,20 +1,5 @@
-// Copyright (c) 2024 WSO2 LLC. (http://www.wso2.com).
-//
-// WSO2 LLC. licenses this file to you under the Apache License,
-// Version 2.0 (the "License"); you may not use this file except
-// in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 // AUTO-GENERATED FILE. DO NOT MODIFY.
+
 // This file is an auto-generated file by Ballerina persistence layer for model.
 // It should not be modified by hand.
 
@@ -41,12 +26,12 @@ public isolated client class Client {
             entityName: "Appointment",
             tableName: "appointment",
             fieldMetadata: {
-                id: {columnName: "id", dbGenerated: true},
+                id: {columnName: "id"},
                 reason: {columnName: "reason"},
                 status: {columnName: "status"},
                 patientId: {columnName: "patient_id"},
                 doctorId: {columnName: "doctorId"},
-                "patient.id": {relation: {entityName: "patient", refField: "id", refColumn: "IDP"}},
+                "patient.idP": {relation: {entityName: "patient", refField: "idP", refColumn: "ID_P"}},
                 "patient.name": {relation: {entityName: "patient", refField: "name"}},
                 "patient.age": {relation: {entityName: "patient", refField: "age"}},
                 "patient.address": {relation: {entityName: "patient", refField: "address", refColumn: "ADDRESS"}},
@@ -60,7 +45,7 @@ public isolated client class Client {
             },
             keyFields: ["id"],
             joinMetadata: {
-                patient: {entity: Patient, fieldName: "patient", refTable: "patients", refColumns: ["IDP"], joinColumns: ["patient_id"], 'type: psql:ONE_TO_MANY},
+                patient: {entity: Patient, fieldName: "patient", refTable: "patients", refColumns: ["ID_P"], joinColumns: ["patient_id"], 'type: psql:ONE_TO_MANY},
                 doctor: {entity: Doctor, fieldName: "doctor", refTable: "Doctor", refColumns: ["id"], joinColumns: ["doctorId"], 'type: psql:ONE_TO_MANY}
             }
         },
@@ -68,7 +53,7 @@ public isolated client class Client {
             entityName: "Patient",
             tableName: "patients",
             fieldMetadata: {
-                id: {columnName: "IDP", dbGenerated: true},
+                idP: {columnName: "ID_P", dbGenerated: true},
                 name: {columnName: "name"},
                 age: {columnName: "age"},
                 address: {columnName: "ADDRESS"},
@@ -76,19 +61,18 @@ public isolated client class Client {
                 gender: {columnName: "gender"},
                 "appointments[].id": {relation: {entityName: "appointments", refField: "id"}},
                 "appointments[].reason": {relation: {entityName: "appointments", refField: "reason"}},
-                "appointments[].appointmentTime": {relation: {entityName: "appointments", refField: "appointmentTime"}},
                 "appointments[].status": {relation: {entityName: "appointments", refField: "status"}},
                 "appointments[].patientId": {relation: {entityName: "appointments", refField: "patientId", refColumn: "patient_id"}},
                 "appointments[].doctorId": {relation: {entityName: "appointments", refField: "doctorId"}}
             },
-            keyFields: ["id"],
-            joinMetadata: {appointments: {entity: Appointment, fieldName: "appointments", refTable: "appointment", refColumns: ["patient_id"], joinColumns: ["IDP"], 'type: psql:MANY_TO_ONE}}
+            keyFields: ["idP"],
+            joinMetadata: {appointments: {entity: Appointment, fieldName: "appointments", refTable: "appointment", refColumns: ["patient_id"], joinColumns: ["ID_P"], 'type: psql:MANY_TO_ONE}}
         },
         [DOCTOR]: {
             entityName: "Doctor",
             tableName: "Doctor",
             fieldMetadata: {
-                id: {columnName: "id", dbGenerated: true},
+                id: {columnName: "id"},
                 name: {columnName: "name"},
                 specialty: {columnName: "specialty"},
                 phoneNumber: {columnName: "phone_number"},
@@ -105,7 +89,7 @@ public isolated client class Client {
     };
 
     public isolated function init() returns persist:Error? {
-        mysql:Client|error dbClient = new (host = "localhost", user = "root", password = "Test123#", database = "hospital", port = 3300);
+        mysql:Client|error dbClient = new (host = host, user = user, password = password, database = database, port = port, options = connectionOptions);
         if dbClient is error {
             return <persist:Error>error(dbClient.message());
         }
@@ -132,10 +116,9 @@ public isolated client class Client {
         lock {
             sqlClient = self.persistClients.get(APPOINTMENT);
         }
-        sql:ExecutionResult[] result = check sqlClient.runBatchInsertQuery(data);
-        return from sql:ExecutionResult inserted in result
-            where inserted.lastInsertId != ()
-            select <int>inserted.lastInsertId;
+        _ = check sqlClient.runBatchInsertQuery(data);
+        return from AppointmentInsert inserted in data
+            select inserted.id;
     }
 
     isolated resource function put appointments/[int id](AppointmentUpdate value) returns Appointment|persist:Error {
@@ -162,7 +145,7 @@ public isolated client class Client {
         name: "query"
     } external;
 
-    isolated resource function get patients/[int id](PatientTargetType targetType = <>) returns targetType|persist:Error = @java:Method {
+    isolated resource function get patients/[int idP](PatientTargetType targetType = <>) returns targetType|persist:Error = @java:Method {
         'class: "io.ballerina.stdlib.persist.sql.datastore.MySQLProcessor",
         name: "queryOne"
     } external;
@@ -178,22 +161,22 @@ public isolated client class Client {
             select <int>inserted.lastInsertId;
     }
 
-    isolated resource function put patients/[int id](PatientUpdate value) returns Patient|persist:Error {
+    isolated resource function put patients/[int idP](PatientUpdate value) returns Patient|persist:Error {
         psql:SQLClient sqlClient;
         lock {
             sqlClient = self.persistClients.get(PATIENT);
         }
-        _ = check sqlClient.runUpdateQuery(id, value);
-        return self->/patients/[id].get();
+        _ = check sqlClient.runUpdateQuery(idP, value);
+        return self->/patients/[idP].get();
     }
 
-    isolated resource function delete patients/[int id]() returns Patient|persist:Error {
-        Patient result = check self->/patients/[id].get();
+    isolated resource function delete patients/[int idP]() returns Patient|persist:Error {
+        Patient result = check self->/patients/[idP].get();
         psql:SQLClient sqlClient;
         lock {
             sqlClient = self.persistClients.get(PATIENT);
         }
-        _ = check sqlClient.runDeleteQuery(id);
+        _ = check sqlClient.runDeleteQuery(idP);
         return result;
     }
 
@@ -202,23 +185,22 @@ public isolated client class Client {
         name: "query"
     } external;
 
-    isolated resource function get doctors/[int id](DoctorTargetType targetType = <>) returns targetType|persist:Error = @java:Method {
+    isolated resource function get doctors/[string id](DoctorTargetType targetType = <>) returns targetType|persist:Error = @java:Method {
         'class: "io.ballerina.stdlib.persist.sql.datastore.MySQLProcessor",
         name: "queryOne"
     } external;
 
-    isolated resource function post doctors(DoctorInsert[] data) returns int[]|persist:Error {
+    isolated resource function post doctors(DoctorInsert[] data) returns string[]|persist:Error {
         psql:SQLClient sqlClient;
         lock {
             sqlClient = self.persistClients.get(DOCTOR);
         }
-        sql:ExecutionResult[] result = check sqlClient.runBatchInsertQuery(data);
-        return from sql:ExecutionResult inserted in result
-            where inserted.lastInsertId != ()
-            select <int>inserted.lastInsertId;
+        _ = check sqlClient.runBatchInsertQuery(data);
+        return from DoctorInsert inserted in data
+            select inserted.id;
     }
 
-    isolated resource function put doctors/[int id](DoctorUpdate value) returns Doctor|persist:Error {
+    isolated resource function put doctors/[string id](DoctorUpdate value) returns Doctor|persist:Error {
         psql:SQLClient sqlClient;
         lock {
             sqlClient = self.persistClients.get(DOCTOR);
@@ -227,7 +209,7 @@ public isolated client class Client {
         return self->/doctors/[id].get();
     }
 
-    isolated resource function delete doctors/[int id]() returns Doctor|persist:Error {
+    isolated resource function delete doctors/[string id]() returns Doctor|persist:Error {
         Doctor result = check self->/doctors/[id].get();
         psql:SQLClient sqlClient;
         lock {

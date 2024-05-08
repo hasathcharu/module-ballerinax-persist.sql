@@ -22,13 +22,9 @@ import ballerina/http;
 import ballerina/persist;
 import insert_tests.db;
 import ballerina/io;
+import ballerina/uuid;
 
-const db:DoctorInsert doctor = {
-    name: "John Doe",
-    phoneNumber: "0711232345",
-    salary: 500.00,
-    specialty: "Physician"
-};
+int appointmentId = 0;
 
 const db:PatientInsert patient = {
     name: "Jane Doe",
@@ -36,13 +32,6 @@ const db:PatientInsert patient = {
     age: 25,
     address: "Colombo",
     gender: db:MALE
-};
-
-const db:AppointmentInsert appointment = {
-    doctorId: 1,
-    patientId: 1,
-    reason: "Checkup",
-    status: db:STARTED
 };
 
 
@@ -55,7 +44,14 @@ service / on new http:Listener(9090) {
     }
 
     isolated resource function get doctors() returns http:InternalServerError & readonly|http:Created & readonly|http:Conflict & readonly {
-        int[]|persist:Error result = self.dbClient->/doctors.post([doctor]);
+        db:DoctorInsert doctor = {
+            id: uuid:createType1AsString(),
+            name: "John Doe",
+            phoneNumber: "0711232345",
+            salary: 500.00,
+            specialty: "Physician"
+        };
+        string[]|persist:Error result = self.dbClient->/doctors.post([doctor]);
         if result is persist:Error {
             io:println(result);
             return http:INTERNAL_SERVER_ERROR;
@@ -72,7 +68,15 @@ service / on new http:Listener(9090) {
         return http:CREATED;
     }
 
-    isolated resource function get appointments() returns http:InternalServerError & readonly|http:Created & readonly|http:Conflict & readonly {
+    resource function get appointments() returns http:InternalServerError & readonly|http:Created & readonly|http:Conflict & readonly {
+        appointmentId = appointmentId + 1;
+        db:AppointmentInsert appointment = {
+            id: appointmentId,
+            doctorId: "id1",
+            patientId: 1,
+            reason: "Checkup",
+            status: db:STARTED
+        };
         int[]|persist:Error result = self.dbClient->/appointments.post([appointment]);
         if result is persist:Error {
             io:println(result);
