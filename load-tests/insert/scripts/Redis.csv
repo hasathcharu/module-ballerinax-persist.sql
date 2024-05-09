@@ -1,0 +1,5 @@
+Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
+Insert Patient (Auto Generated),10000,11323,1,25624,9097.43,0.000%,390.25913,38.11,47.64,100.0
+Insert Doctor (UUID),10000,1652,0,25551,4888.00,0.000%,390.59448,38.14,47.30,100.0
+Insert Appoointment (Sequence),10000,832,0,25516,3278.07,0.000%,390.93041,38.18,49.25,100.0
+TOTAL,30000,4602,0,25624,7863.33,0.000%,1170.68602,114.32,144.05,100.0

@@ -19,7 +19,7 @@ CREATE DATABASE hospital;
 USE hospital;
 
 CREATE TABLE `Doctor` (
-	`id` VARCHAR(191) NOT NULL,
+	`id` CHAR(36) NOT NULL,
 	`name` VARCHAR(191) NOT NULL,
 	`specialty` VARCHAR(20) NOT NULL,
 	`phone_number` VARCHAR(191) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE `appointment` (
 	`status` ENUM('SCHEDULED', 'STARTED', 'ENDED') NOT NULL,
 	`patient_id` INT NOT NULL,
 	FOREIGN KEY(`patient_id`) REFERENCES `patients`(`ID_P`),
-	`doctorId` VARCHAR(191) NOT NULL,
+	`doctorId` CHAR(36) NOT NULL,
 	FOREIGN KEY(`doctorId`) REFERENCES `Doctor`(`id`),
 	PRIMARY KEY(`id`)
 );

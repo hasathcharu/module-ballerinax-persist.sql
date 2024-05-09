@@ -21,6 +21,7 @@ public type Appointment record {|
     @sql:Index {name: "patient_id"}
     int patientId;
     @sql:Index {name: "doctorId"}
+    @sql:Char {length: 36}
     string doctorId;
     @sql:Relation {keys: ["patientId"]}
     Patient patient;
@@ -44,6 +45,7 @@ public type Patient record {|
 |};
 
 public type Doctor record {|
+    @sql:Char {length: 36}
     readonly string id;
     string name;
     @sql:Varchar {length: 20}
