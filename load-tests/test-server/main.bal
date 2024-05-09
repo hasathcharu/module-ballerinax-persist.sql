@@ -43,7 +43,7 @@ service / on new http:Listener(9090) {
 
     isolated resource function get insert\-doctors() returns http:InternalServerError & readonly|http:Created & readonly|http:Conflict & readonly {
         db:DoctorInsert doctor = {
-            id: uuid:createType1AsString(),
+            id: uuid:createRandomUuid(),
             name: "John Doe",
             phoneNumber: "0711232345",
             salary: 500.00,
