@@ -14,7 +14,7 @@
 -- specific language governing permissions and limitations
 -- under the License.
 
-DROP DATABASE hospital;
+DROP DATABASE IF EXISTS hospital;
 CREATE DATABASE hospital;
 USE hospital;
 

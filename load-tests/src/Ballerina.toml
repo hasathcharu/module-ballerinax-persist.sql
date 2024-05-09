@@ -1,6 +1,6 @@
 [package]
 org = "haritha"
-name = "insert_tests"
+name = "load_tests"
 version = "0.1.0"
 distribution = "2201.9.0"
 

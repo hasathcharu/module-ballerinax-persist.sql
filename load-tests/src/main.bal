@@ -20,11 +20,9 @@
 
 import ballerina/http;
 import ballerina/persist;
-import insert_tests.db;
+import load_tests.db;
 import ballerina/io;
 import ballerina/uuid;
-
-int appointmentId = 0;
 
 const db:PatientInsert patient = {
     name: "Jane Doe",
@@ -43,7 +41,7 @@ service / on new http:Listener(9090) {
         self.dbClient = check new ();
     }
 
-    isolated resource function get doctors() returns http:InternalServerError & readonly|http:Created & readonly|http:Conflict & readonly {
+    isolated resource function get insert\-doctors() returns http:InternalServerError & readonly|http:Created & readonly|http:Conflict & readonly {
         db:DoctorInsert doctor = {
             id: uuid:createType1AsString(),
             name: "John Doe",
@@ -59,7 +57,7 @@ service / on new http:Listener(9090) {
         return http:CREATED;
     }
 
-    isolated resource function get patients() returns http:InternalServerError & readonly|http:Created {
+    isolated resource function get insert\-patients() returns http:InternalServerError & readonly|http:Created {
         int[]|persist:Error result = self.dbClient->/patients.post([patient]);
         if result is persist:Error {
             io:println(result);
@@ -68,14 +66,14 @@ service / on new http:Listener(9090) {
         return http:CREATED;
     }
 
-    resource function get appointments() returns http:InternalServerError & readonly|http:Created & readonly|http:Conflict & readonly {
-        appointmentId = appointmentId + 1;
+    isolated resource function get insert\-appointments(int appointmentId) returns http:InternalServerError & readonly|http:Created & readonly|http:Conflict & readonly {
+        db:AppointmentStatus[] statuses = [db:STARTED, db:SCHEDULED, db:ENDED];
         db:AppointmentInsert appointment = {
             id: appointmentId,
             doctorId: "id1",
             patientId: 1,
             reason: "Checkup",
-            status: db:STARTED
+            status: statuses[appointmentId % 3]
         };
         int[]|persist:Error result = self.dbClient->/appointments.post([appointment]);
         if result is persist:Error {
@@ -83,5 +81,24 @@ service / on new http:Listener(9090) {
             return http:INTERNAL_SERVER_ERROR;
         }
         return http:CREATED;
+    }
+
+
+    isolated resource function get doctors/[string id]() returns db:Doctor|persist:Error? {
+        db:Doctor doctor = check self.dbClient->/doctors/[id];
+        return doctor;
+    }
+
+    isolated resource function get patients() returns db:Patient[]|error {
+        stream<db:Patient, persist:Error?> patients = self.dbClient->/patients.get();
+        return from db:Patient patient in patients
+            select patient;
+    }
+
+    isolated resource function get appointments() returns db:AppointmentWithRelations[]|error {
+        stream<db:AppointmentWithRelations, persist:Error?> appointments = self.dbClient->/appointments.get();
+        return from db:AppointmentWithRelations appointment in appointments
+            where appointment.status == db:STARTED
+            select appointment;
     }
 }

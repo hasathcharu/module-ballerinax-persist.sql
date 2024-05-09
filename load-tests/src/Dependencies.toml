@@ -365,7 +365,7 @@ modules = [
 
 [[package]]
 org = "haritha"
-name = "insert_tests"
+name = "load_tests"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
@@ -380,7 +380,7 @@ dependencies = [
 	{org = "ballerinax", name = "persist.sql"}
 ]
 modules = [
-	{org = "haritha", packageName = "insert_tests", moduleName = "insert_tests"},
-	{org = "haritha", packageName = "insert_tests", moduleName = "insert_tests.db"}
+	{org = "haritha", packageName = "load_tests", moduleName = "load_tests"},
+	{org = "haritha", packageName = "load_tests", moduleName = "load_tests.db"}
 ]
 
