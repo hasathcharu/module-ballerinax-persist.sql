@@ -1,5 +1,5 @@
 [load_tests.db]
-host = "mysql8"
+host = "mysql8-service"
 port = 3306
 user = "root"
 password = "Test123#"
