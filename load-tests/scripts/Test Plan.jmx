@@ -6,6 +6,7 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Insert DB Generated">
@@ -22,7 +23,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Request">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Insert DB Generated">
           <stringProp name="HTTPSampler.domain">${service_host}</stringProp>
           <stringProp name="HTTPSampler.port">${service_port}</stringProp>
           <stringProp name="HTTPSampler.path">/insert-patients</stringProp>
@@ -50,7 +51,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Request">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Insert BAL UUID">
           <stringProp name="HTTPSampler.domain">${service_host}</stringProp>
           <stringProp name="HTTPSampler.port">${service_port}</stringProp>
           <stringProp name="HTTPSampler.path">/insert-doctors</stringProp>
@@ -78,7 +79,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Request">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Insert Ungenerated">
           <stringProp name="HTTPSampler.domain">${service_host}</stringProp>
           <stringProp name="HTTPSampler.port">${service_port}</stringProp>
           <stringProp name="HTTPSampler.path">/insert-appointments</stringProp>
@@ -114,7 +115,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Request">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Retrieve One">
           <stringProp name="HTTPSampler.domain">${service_host}</stringProp>
           <stringProp name="HTTPSampler.port">${service_port}</stringProp>
           <stringProp name="HTTPSampler.path">/doctors/id1</stringProp>
@@ -142,7 +143,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Request">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Retrieve Filtered">
           <stringProp name="TestPlan.comments">Retrieves 200/3 records</stringProp>
           <stringProp name="HTTPSampler.domain">${service_host}</stringProp>
           <stringProp name="HTTPSampler.port">${service_port}</stringProp>
@@ -171,7 +172,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Request">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Retrieve All">
           <stringProp name="TestPlan.comments">Retrieves 200 records</stringProp>
           <stringProp name="HTTPSampler.domain">${service_host}</stringProp>
           <stringProp name="HTTPSampler.port">${service_port}</stringProp>
@@ -284,7 +285,7 @@
           </elementProp>
           <elementProp name="service_port" elementType="Argument">
             <stringProp name="Argument.name">service_port</stringProp>
-            <stringProp name="Argument.value">9090</stringProp>
+            <stringProp name="Argument.value">9091</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="service_host" elementType="Argument">
